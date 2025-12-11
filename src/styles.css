@@ -1,0 +1,103 @@
+* {
+  box-sizing: border-box;
+}
+
+main {
+  display: flex;
+  flex-wrap: wrap;
+
+  margin: 50px auto;
+  justify-content: center;
+  gap: clamp(50px, 10vw, 120px);
+}
+
+.player-container {
+  width: 350px;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(11, 1fr);
+  grid-template-rows: repeat(11, 1fr);
+  width: 340px;
+  height: 340px;
+  flex-shrink: 0;
+  gap: 1px;
+}
+
+.grid-label {
+  align-content: center;
+  text-align: center;
+}
+
+.cell {
+  border: 1px solid rgb(227, 227, 227);
+  cursor: pointer;
+}
+
+.player-container .ship {
+  background-color: rgb(61, 107, 255, 0.25);
+}
+
+.computer-container .ship {
+  /* For debugging computer */
+  background-color: rgba(255, 158, 61, 0.25);
+}
+
+.hit,
+.miss {
+  cursor: default;
+}
+
+.player-container .hit {
+  background-color: rgb(61, 107, 255);
+}
+
+.computer-container .hit {
+  background-color: rgb(255, 158, 61, 0.25);
+}
+
+.miss {
+  background-color: rgb(112, 112, 112);
+}
+
+.computer-container .sunk {
+  background-color: rgb(255, 168, 97);
+}
+
+.ships-container {
+  display: flex;
+  /* width: calc((30px + 1px) * 5); */
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.ship-piece {
+  display: flex;
+  gap: 1px;
+}
+
+.ship-piece div {
+  background-color: rgb(61, 107, 255, 0.25);
+  height: 30px;
+  width: 30px;
+}
+
+.ship-3 {
+  display: flex;
+
+  width: calc((30px + 1px) * 5);
+  /* grid-template-columns: repeat(auto-fill, minmax(30px, 1fr)); */
+}
+
+.ship-2 {
+  /* grid-template-columns: repeat(auto-fill, minmax(30px, 1fr)); */
+}
+
+[data-horizontal="true"] {
+  flex-direction: row;
+}
+
+[data-horizontal="false"] {
+  flex-direction: column;
+}
