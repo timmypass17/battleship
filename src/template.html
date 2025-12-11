@@ -9,10 +9,10 @@
     <main>
       <div class="player-container">
         <div class="board"></div>
-        <p draggable="true">Your grid</p>
+        <p class="description">Your grid</p>
 
         <div class="ships-container">
-          <div
+          <!-- <div
             class="ship-piece"
             draggable="true"
             data-horizontal="true"
@@ -67,12 +67,14 @@
           >
             <div></div>
             <div></div>
-          </div>
+          </div> -->
         </div>
+        <button id="play-btn">Play Game</button>
+        <div id="game-result"></div>
       </div>
-      <div class="computer-container">
+      <div class="computer-container disabled">
         <div class="board"></div>
-        <p>Opponent's grid</p>
+        <p class="description">Opponent's grid</p>
       </div>
     </main>
   </body>

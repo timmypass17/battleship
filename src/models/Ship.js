@@ -4,7 +4,7 @@ export class Ship {
     this.col = col;
     this.length = length;
     this.health = length;
-    this.coordinates = [];
+    this.coordinates = []; // uncessary, we could calculate coordinates from row, col, length, horizontal..
     this.isHorizontal = isHorizontal;
   }
 

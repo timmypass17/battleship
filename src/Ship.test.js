@@ -54,8 +54,12 @@ describe("Board functions", () => {
     expect(gameBoard.board[0][0]).toBe(null);
 
     let overlapShip = new Ship(1, 0, 4, true);
-    const didPlaceOverlappingShip = gameBoard.placeShip(overlapShip);
-    expect(didPlaceOverlappingShip).toBe(false);
+    const overlapShipResult = gameBoard.placeShip(overlapShip);
+    expect(overlapShipResult).toBe(false);
+
+    let outOfBoundsShip = new Ship(0, 9, 4, true);
+    const outOfBoundsResult = gameBoard.placeShip(outOfBoundsShip);
+    expect(outOfBoundsResult).toBe(false);
   });
 
   test("receiveAttack hit", () => {

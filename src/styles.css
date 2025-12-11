@@ -41,7 +41,7 @@ main {
 
 .computer-container .ship {
   /* For debugging computer */
-  background-color: rgba(255, 158, 61, 0.25);
+  background-color: rgba(255, 158, 61, 0.1);
 }
 
 .hit,
@@ -75,6 +75,7 @@ main {
 .ship-piece {
   display: flex;
   gap: 1px;
+  cursor: pointer;
 }
 
 .ship-piece div {
@@ -100,4 +101,13 @@ main {
 
 [data-horizontal="false"] {
   flex-direction: column;
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.5; /* optional */
+}
+
+.description {
+  text-align: center;
 }

@@ -7,17 +7,18 @@ export class GameController {
     this.view = view;
     this.gameOver = false;
 
+    this.gameResultEle = document.querySelector("#game-result");
+    this.playBtn = document.querySelector("#play-btn");
+
     this.init();
     this.addEventListeners();
   }
 
-  init() {
-    let ship2 = new Ship(3, 2, 4, true);
-    this.computer.gameBoard.placeShip(ship2);
-    this.view.computerBoardView.updateUI(this.computer.gameBoard.board);
-  }
+  init() {}
 
   addEventListeners() {
+    let shipsContainer = document.querySelector(".ships-container");
+
     this.view.computerBoardView.handleTapCell = (row, col) => {
       this.handlePlayerAttack(row, col);
     };
@@ -41,21 +42,20 @@ export class GameController {
       const data = JSON.parse(e.dataTransfer.getData("application/json"));
 
       let ship = new Ship(row, col, data.shipLength, data.horizontal);
-      // Placeship
       const placedShip = this.player.gameBoard.placeShip(ship);
       if (placedShip) {
-        // Update board
         this.view.playerBoardView.updateUI(this.player.gameBoard.board);
-
-        // remove ship from container
         const shipEle = document.querySelector(
           `[data-ship-id="${data.shipId}"]`
         );
         shipEle.remove();
+
+        if (shipsContainer.children.length === 0) {
+          this.startGame();
+        }
       }
     });
 
-    let shipsContainer = document.querySelector(".ships-container");
     shipsContainer.addEventListener("dragstart", (e) => {
       const shipEle = e.target.closest(".ship-piece"); // safer
       if (!shipEle) return;
@@ -69,10 +69,18 @@ export class GameController {
       e.dataTransfer.setDragImage(shipEle, 15, 15);
     });
 
-    // shipsContainer.addEventListener("click", (e) => {
-    //   const shipEle = e.target.closest(".ship-piece"); // safer
-    //   if (!shipEle) return;
-    // });
+    shipsContainer.addEventListener("click", (e) => {
+      const shipEle = e.target.closest(".ship-piece"); // safer
+      if (!shipEle) return;
+      const horizontal = shipEle.dataset.horizontal === "true";
+
+      shipEle.dataset.horizontal = horizontal ? "false" : "true";
+    });
+
+    this.playBtn = document.querySelector("#play-btn");
+    this.playBtn.addEventListener("click", (e) => {
+      this.reset();
+    });
   }
 
   handlePlayerAttack(row, col) {
@@ -84,13 +92,12 @@ export class GameController {
       const ship = this.computer.gameBoard.receiveAttack(row, col);
 
       if (ship?.isSunk()) {
-        console.log(`${ship} sunk!`);
         this.view.computerBoardView.updateSunkUI(ship.coordinates);
 
         if (!this.computer.gameBoard.hasShips()) {
-          console.log("Game over! Player Won!");
           this.gameOver = true;
-
+          this.gameResultEle.textContent = "Player Won!";
+          this.playBtn.style.display = "";
           return;
         }
       }
@@ -118,11 +125,37 @@ export class GameController {
     this.view.playerBoardView.updateCell(this.player.gameBoard.board, row, col);
 
     if (!this.player.gameBoard.hasShips()) {
-      console.log("Game over! Computer Won!");
       this.gameOver = true;
+      this.gameResultEle.textContent = "Computer Won!";
+      this.playBtn.style.display = "";
       return;
     }
   }
 
-  placeShip(row, col, shipLength, horizontal) {}
+  reset() {
+    this.playBtn.style.display = "none";
+
+    this.view.playerBoardView.restoreShipPieces();
+
+    this.player.gameBoard.clear();
+    this.view.playerBoardView.clearBoard();
+
+    this.computer.gameBoard.clear();
+    this.view.computerBoardView.clearBoard();
+    this.computer.gameBoard.placeRandomShips();
+    this.view.computerBoardView.updateUI(this.computer.gameBoard.board);
+
+    this.gameResultEle.textContent = "";
+
+    const computerContainer = document.querySelector(".computer-container");
+    computerContainer.classList.add("disabled");
+  }
+
+  startGame() {
+    const computerContainer = document.querySelector(".computer-container");
+    computerContainer.classList.remove("disabled");
+    this.gameOver = false;
+  }
+
+  endGame() {}
 }
