@@ -3,6 +3,7 @@ import { Ship } from "./models/Ship";
 export class BoardView {
   constructor(boardContainer) {
     this.boardContainer = boardContainer;
+    this.boardEle = boardContainer.querySelector(".board");
     this.initalizeBoard();
 
     this.boardContainer.addEventListener("click", (e) => {
@@ -18,12 +19,12 @@ export class BoardView {
   }
 
   initalizeBoard() {
-    this.boardContainer.replaceChildren();
+    this.boardEle.replaceChildren();
     for (let row = 0; row < 11; row++) {
       for (let col = 0; col < 11; col++) {
         if (row === 0 && col === 0) {
           const cell = document.createElement("div");
-          this.boardContainer.appendChild(cell);
+          this.boardEle.appendChild(cell);
           continue;
         }
 
@@ -32,7 +33,7 @@ export class BoardView {
           cell.classList.add("grid-label");
 
           cell.textContent = `${String.fromCharCode("A".charCodeAt(0) + col - 1)}`;
-          this.boardContainer.appendChild(cell);
+          this.boardEle.appendChild(cell);
           continue;
         }
 
@@ -41,7 +42,7 @@ export class BoardView {
           cell.classList.add("grid-label");
 
           cell.textContent = `${row}`;
-          this.boardContainer.appendChild(cell);
+          this.boardEle.appendChild(cell);
           continue;
         }
 
@@ -49,7 +50,7 @@ export class BoardView {
         cell.classList.add("cell");
         cell.dataset.row = row - 1;
         cell.dataset.col = col - 1;
-        this.boardContainer.appendChild(cell);
+        this.boardEle.appendChild(cell);
       }
     }
   }
@@ -63,7 +64,7 @@ export class BoardView {
   }
 
   updateCell(board, row, col) {
-    const cell = this.boardContainer.querySelector(
+    const cell = this.boardEle.querySelector(
       `.cell[data-row="${row}"][data-col="${col}"]`
     );
     if (board[row][col] instanceof Ship) {
@@ -78,7 +79,7 @@ export class BoardView {
   clearBoard() {
     for (let i = 0; i < 10; i++) {
       for (let j = 0; j < 10; j++) {
-        const cell = this.boardContainer.querySelector(
+        const cell = this.boardEle.querySelector(
           `.cell[data-row="${i}"][data-col="${j}"]`
         );
         cell.classList.remove("ship");
@@ -89,13 +90,19 @@ export class BoardView {
     }
   }
 
-  updateSunkUI(coordinates) {
-    for (let [row, col] of coordinates) {
-      const cell = this.boardContainer.querySelector(
+  updateSunkUI(ship) {
+    for (let [row, col] of ship.coordinates) {
+      const cell = this.boardEle.querySelector(
         `.cell[data-row="${row}"][data-col="${col}"]`
       );
       cell.classList.add("sunk");
     }
+
+    const shipId = ship.shipId;
+    const shipRemainEle = this.boardContainer.querySelector(
+      `[data-ship-id=${shipId}]`
+    );
+    shipRemainEle.remove();
   }
 
   restoreShipPieces() {
@@ -123,6 +130,36 @@ export class BoardView {
       }
 
       shipsContainer.appendChild(shipPiece);
+    }
+  }
+
+  restoreShipRemainingPieces() {
+    const shipsRemainingContainer = this.boardContainer.querySelector(
+      ".ships-remaining-container"
+    );
+    shipsRemainingContainer.replaceChildren();
+
+    const shipPieces = {
+      "ship-5": 5,
+      "ship-4": 4,
+      "ship-3-1": 3,
+      "ship-3-2": 3,
+      "ship-2": 2,
+    };
+
+    for (const [shipId, shipLength] of Object.entries(shipPieces)) {
+      const shipPiece = document.createElement("div");
+      shipPiece.classList.add("ship-remaining-piece");
+      shipPiece.draggable = true;
+      shipPiece.dataset.horizontal = true;
+      shipPiece.dataset.shipId = shipId; // automatically converts to "ship-id"
+
+      for (let i = 0; i < shipLength; i++) {
+        const shipPart = document.createElement("div");
+        shipPiece.appendChild(shipPart);
+      }
+
+      shipsRemainingContainer.appendChild(shipPiece);
     }
   }
 }

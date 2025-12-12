@@ -127,16 +127,26 @@ export class GameBoard {
   }
 
   placeRandomShips() {
-    const shipLengths = [5, 4, 3, 3, 2];
-    let i = 0;
-    while (i < 5) {
-      const row = Math.floor(Math.random() * this.board.length);
-      const col = Math.floor(Math.random() * this.board[0].length);
-      const shipLength = shipLengths[i];
-      const isHorizontal = Math.random() < 0.5;
-      const ship = new Ship(row, col, shipLength, isHorizontal);
-      if (this.placeShip(ship)) {
-        i += 1;
+    const shipPieces = {
+      "ship-5": 5,
+      "ship-4": 4,
+      "ship-3-1": 3,
+      "ship-3-2": 3,
+      "ship-2": 2,
+    };
+
+    for (const [shipId, shipLength] of Object.entries(shipPieces)) {
+      while (true) {
+        const row = Math.floor(Math.random() * this.board.length);
+        const col = Math.floor(Math.random() * this.board[0].length);
+        const isHorizontal = Math.random() < 0.5;
+
+        const ship = new Ship(row, col, shipLength, isHorizontal);
+        ship.shipId = shipId;
+
+        if (this.placeShip(ship)) {
+          break;
+        }
       }
     }
   }

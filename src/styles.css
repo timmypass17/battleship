@@ -1,18 +1,33 @@
+:root {
+  --player-primary-color: 61, 107, 255;
+  --computer-primary-color: 255, 168, 97;
+  --dark-blue: rgb(95, 98, 116);
+  --cell-color: rgb(227, 227, 227);
+}
+
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", sans-serif;
+  color: var(--dark-blue);
 }
 
 main {
   display: flex;
   flex-wrap: wrap;
 
-  margin: 50px auto;
+  margin: 50px;
   justify-content: center;
   gap: clamp(50px, 10vw, 120px);
 }
 
-.player-container {
+.board-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 350px;
+  gap: 16px;
 }
 
 .board {
@@ -28,15 +43,19 @@ main {
 .grid-label {
   align-content: center;
   text-align: center;
+  font-size: 12px;
 }
 
 .cell {
-  border: 1px solid rgb(227, 227, 227);
+  border: 1px solid var(--cell-color);
+}
+
+.computer-container .cell {
   cursor: pointer;
 }
 
 .player-container .ship {
-  background-color: rgb(61, 107, 255, 0.25);
+  background-color: rgb(var(--player-primary-color), 0.25);
 }
 
 .computer-container .ship {
@@ -50,24 +69,23 @@ main {
 }
 
 .player-container .hit {
-  background-color: rgb(61, 107, 255);
+  background-color: rgb(var(--player-primary-color));
 }
 
 .computer-container .hit {
-  background-color: rgb(255, 158, 61, 0.25);
+  background-color: rgb(var(--computer-primary-color), 0.25);
 }
 
 .miss {
-  background-color: rgb(112, 112, 112);
+  background-color: var(--dark-blue);
 }
 
 .computer-container .sunk {
-  background-color: rgb(255, 168, 97);
+  background-color: rgb(var(--computer-primary-color));
 }
 
 .ships-container {
   display: flex;
-  /* width: calc((30px + 1px) * 5); */
   gap: 16px;
   flex-wrap: wrap;
 }
@@ -79,7 +97,7 @@ main {
 }
 
 .ship-piece div {
-  background-color: rgb(61, 107, 255, 0.25);
+  background-color: rgb(var(--player-primary-color), 0.25);
   height: 30px;
   width: 30px;
 }
@@ -109,5 +127,59 @@ main {
 }
 
 .description {
+}
+
+.ships-remaining-container {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 36px;
+  width: 60px;
+}
+
+.ship-remaining-piece {
+  display: flex;
+  gap: 1px;
+}
+
+.player-container .ship-remaining-piece div {
+  background-color: rgba(var(--player-primary-color), 0.1);
+}
+
+.computer-container .ship-remaining-piece div {
+  background-color: rgba(var(--computer-primary-color), 0.2);
+}
+
+.ship-remaining-piece div {
+  height: 8px;
+  width: 8px;
+}
+
+.player-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.computer-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.computer-container .ships-remaining-container {
+  flex-direction: row-reverse;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.game-result {
   text-align: center;
+  white-space: pre-line;
+}
+
+.play-btn {
+  padding: 4px;
 }

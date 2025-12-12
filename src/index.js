@@ -5,8 +5,8 @@ import { GameController } from "./GameController";
 import { Player } from "./models/Player";
 import { GameBoard } from "./models/GameBoard";
 
-const playerContainer = document.querySelector(".player-container .board");
-const computerContainer = document.querySelector(".computer-container .board");
+const playerContainer = document.querySelector(".player-container");
+const computerContainer = document.querySelector(".computer-container");
 
 let playerBoardView = new BoardView(playerContainer);
 let computerBoardView = new BoardView(computerContainer);
