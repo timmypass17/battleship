@@ -7,11 +7,15 @@ export class GameController {
     this.view = view;
     this.gameOver = false;
 
+    this.playerTurn = true;
+
     this.gameResultEle = document.querySelector("#game-result");
     this.playBtn = document.querySelector("#play-btn");
 
     this.init();
     this.addEventListeners();
+
+    this.stack = [];
   }
 
   init() {}
@@ -88,6 +92,10 @@ export class GameController {
       return;
     }
 
+    if (!this.playerTurn) {
+      return;
+    }
+
     try {
       const ship = this.computer.gameBoard.receiveAttack(row, col);
 
@@ -108,31 +116,74 @@ export class GameController {
         col
       );
 
-      // Computer's turn
+      this.playerTurn = false;
       this.handleComputerAttack();
     } catch (e) {
-      console.error(`${e.message}`);
+      console.error(`Error handle player attack ${e.message}`);
     }
   }
 
+  // DFS
   handleComputerAttack() {
-    const coordinates = this.player.gameBoard.getAvailableCoordinates();
-    const randomCoordinate =
-      coordinates[Math.floor(Math.random() * coordinates.length)];
-    const [row, col] = randomCoordinate;
+    let row;
+    let col;
 
-    this.player.gameBoard.receiveAttack(row, col);
+    if (this.stack.length) {
+      const coordinates = this.stack.pop();
+      row = coordinates[0];
+      col = coordinates[1];
+    } else {
+      const coordinates = this.player.gameBoard.getAvailableCoordinates();
+
+      const randomCoordinate =
+        coordinates[Math.floor(Math.random() * coordinates.length)];
+      row = randomCoordinate[0];
+      col = randomCoordinate[1];
+    }
+
+    const ship = this.player.gameBoard.receiveAttack(row, col);
+
     this.view.playerBoardView.updateCell(this.player.gameBoard.board, row, col);
 
-    if (!this.player.gameBoard.hasShips()) {
-      this.gameOver = true;
-      this.gameResultEle.textContent = "Computer Won!";
-      this.playBtn.style.display = "";
-      return;
+    if (ship) {
+      if (ship?.isSunk()) {
+        this.view.playerBoardView.updateSunkUI(ship.coordinates);
+
+        if (!this.player.gameBoard.hasShips()) {
+          this.gameOver = true;
+          this.gameResultEle.textContent = "Computer Won!";
+          this.playBtn.style.display = "";
+          return;
+        }
+      }
+
+      const directions = [
+        [-1, 0],
+        [0, 1],
+        [1, 0],
+        [0, -1],
+      ];
+
+      for (const [r, c] of directions) {
+        if (row + r < 0 || row + r >= 10 || col + c < 0 || col + c >= 10) {
+          continue;
+        }
+
+        if (
+          typeof this.player.gameBoard.board[row + r][col + c] === "boolean"
+        ) {
+          continue;
+        }
+
+        this.stack.push([row + r, col + c]);
+      }
     }
+
+    this.playerTurn = true;
   }
 
   reset() {
+    this.playerTurn = true;
     this.playBtn.style.display = "none";
 
     this.view.playerBoardView.restoreShipPieces();

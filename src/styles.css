@@ -41,7 +41,7 @@ main {
 
 .computer-container .ship {
   /* For debugging computer */
-  background-color: rgba(255, 158, 61, 0.1);
+  /* background-color: rgba(255, 158, 61, 0.1); */
 }
 
 .hit,

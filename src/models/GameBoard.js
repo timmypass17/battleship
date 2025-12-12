@@ -117,8 +117,7 @@ export class GameBoard {
     const coordinates = [];
     for (let i = 0; i < this.rows; i++) {
       for (let j = 0; j < this.cols; j++) {
-        const isAvailable =
-          this.board[i][j] === null || this.board[i][j] instanceof Ship;
+        const isAvailable = typeof this.board[i][j] !== "boolean";
         if (isAvailable) {
           coordinates.push([i, j]);
         }
